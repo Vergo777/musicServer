@@ -115,11 +115,11 @@ populateClientMusicQueue = function(musicQueue) {
     }
 };
 
-function getCookie(name) {
+getCookie = function(name) {
     var value = "; " + document.cookie;
     var parts = value.split("; " + name + "=");
     if (parts.length == 2) return parts.pop().split(";").shift();
-};
+}
 },{"youtube-player":8}],2:[function(require,module,exports){
 
 module.exports = function load (src, opts, cb) {

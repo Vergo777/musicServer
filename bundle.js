@@ -76,7 +76,7 @@ $('#newSongQueue').find('button').click(function() {
         "newSong" : newSong,
         "GSSSO" : getCookie("GSSSO")
     });
-    $('#newSongQueue').find('.form-control').val('')
+    $('#newSongQueue').find('.form-control').val('');
 });
 
 addSongToBucketList = function(bucket, title, kerberos) {
@@ -119,7 +119,7 @@ function getCookie(name) {
     var value = "; " + document.cookie;
     var parts = value.split("; " + name + "=");
     if (parts.length == 2) return parts.pop().split(";").shift();
-}
+};
 },{"youtube-player":8}],2:[function(require,module,exports){
 
 module.exports = function load (src, opts, cb) {

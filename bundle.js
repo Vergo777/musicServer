@@ -28,10 +28,10 @@ socket.on('initialQueueData', function(musicQueue){
 });
 
 socket.on('newSongQueueForClient', function(newMusicQueueObject) {
-    addSongToBucketList(newMusicQueueObject.bucket, newMusicQueueObject.title, newMusicQueueObject.kerberos);
+    addSongToBucketList(newMusicQueueObject.bucket, newMusicQueueObject.video, newMusicQueueObject.kerberos);
     addNewSongQueueAlert(false, "Video successfully added to queue!", "");
     if(newMusicQueueObject.playVideo) {
-        updateNowPlayingHeader(newMusicQueueObject.title, newMusicQueueObject.kerberos);
+        updateNowPlayingHeader(newMusicQueueObject.video, newMusicQueueObject.kerberos);
         musicPlayer.loadVideoById(newMusicQueueObject.id);
         musicPlayer.playVideo();
     }
@@ -82,7 +82,7 @@ $('#newSongQueue').find('button').click(function() {
 addSongToBucketList = function(bucket, title, kerberos) {
     if($('#bucket' + bucket).length == 0) {
         $('#musicQueue').append('<div class="col-xs-12"><h3 class="text-center">Bucket ' + bucket + '</h3></div>');
-        $('#musicQueue').append('<div class="col-xs-12"><ul class="list-group" id="bucket' + bucket + '"></ul></div>');
+        $('#musicQueue').append('<div class="col-xs-12"><ul class="list-group text-center" id="bucket' + bucket + '"></ul></div>');
     }
 
     $('#bucket' + bucket).append('<li class="list-group-item">' + title + ' : ' + kerberos + '</li>')

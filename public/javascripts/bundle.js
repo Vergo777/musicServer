@@ -17482,20 +17482,21 @@ socket.on('getCurrentVideoElapsedTime', function(newClientSocketId) {
 
 socket.on('playCurrentVideoForNewClient', function(currentVideoData) {
     var currentMusicQueueObject = currentVideoData.currentMusicQueueObject;
-    updateNowPlayingHeader(currentMusicQueueObject.video, currentMusicQueueObject.kerberos);
 
-    musicPlayer.loadVideoById(currentMusicQueueObject.id);
-    musicPlayer.seekTo(currentVideoData.elapsedTime);
-    musicPlayer.playVideo();
+    musicPlayer.loadVideoById(currentMusicQueueObject.id).then(function() {
+        musicPlayer.seekTo(currentVideoData.elapsedTime).then(function() {
+            updateNowPlayingHeader(currentMusicQueueObject.video, currentMusicQueueObject.kerberos);
+        });
+    });
 });
 
 socket.on('newSongQueueForClient', function(newMusicQueueObject) {
     addSongToBucketList(newMusicQueueObject.bucket, newMusicQueueObject.title, newMusicQueueObject.kerberos);
     // addNewSongQueueAlert(false, "Video successfully added to queue!", "");
     if(newMusicQueueObject.playVideo) {
-        updateNowPlayingHeader(newMusicQueueObject.title, newMusicQueueObject.kerberos);
-        musicPlayer.loadVideoById(newMusicQueueObject.id);
-        musicPlayer.playVideo();
+        musicPlayer.loadVideoById(newMusicQueueObject.id).then(function() {
+            updateNowPlayingHeader(newMusicQueueObject.title, newMusicQueueObject.kerberos);
+        });
     }
 });
 
@@ -17513,9 +17514,9 @@ socket.on('playNextSongInQueue', function(nextMusicQueueObject) {
         $('#bucket0').find('li').first().remove();
     }
 
-    updateNowPlayingHeader(nextMusicQueueObject.title, nextMusicQueueObject.kerberos);
-    musicPlayer.loadVideoById(nextMusicQueueObject.id);
-    musicPlayer.playVideo();
+    musicPlayer.loadVideoById(nextMusicQueueObject.id).then(function() {
+        updateNowPlayingHeader(nextMusicQueueObject.title, nextMusicQueueObject.kerberos);
+    });
 });
 
 socket.on('videoAddError', function(AddVideoException) {
@@ -17547,8 +17548,10 @@ addSongToBucketList = function(bucket, title, kerberos) {
 };
 
 updateNowPlayingHeader = function(title, kerberos) {
-    $('#nowPlaying').empty();
-    $('#nowPlaying').append('<h3>Now Playing : ' + title + ' <small>Queued by : ' + kerberos + '</small></h3>');
+    musicPlayer.getVideoData().then(function(videoData) {
+        $('#nowPlaying').empty();
+        $('#nowPlaying').append('<h3>Now Playing : ' + videoData.title + ' <small>Queued by : ' + kerberos + '</small></h3>');
+    });
 };
 
 emptyMusicQueue = function() {

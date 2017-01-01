@@ -24,9 +24,19 @@ io.on('connection', function(socket){
     console.log("Received connection from " + socket.id);
     socket.emit('initialQueueData', musicQueue);
 
-    if(!isSocketMaster(socket.id) && musicQueue.length > 0) {
+    if(!isSocketMaster(socket.id) && musicQueue.length > 0 && masterSocket.socketId != null) {
         // todo: add method to start new client's video at the current playback time of the master
+        io.to(masterSocket.socketId).emit('getCurrentVideoElapsedTime', socket.id);
     }
+
+    socket.on('returnCurrentVideoElapsedTime', function(data) {
+        if(musicQueue.length > 0) {
+            io.to(data.newClientSocketId).emit('playCurrentVideoForNewClient', {
+                "elapsedTime": data.elapsedTime,
+                "currentMusicQueueObject": musicQueue[0][0]
+            });
+        }
+    });
 
     socket.on('disconnect', function() {
         if(isSocketMaster(socket.id)) {

@@ -26,9 +26,27 @@ socket.on('initialQueueData', function(musicQueue){
     populateClientMusicQueue(musicQueue);
 });
 
+socket.on('getCurrentVideoElapsedTime', function(newClientSocketId) {
+    musicPlayer.getCurrentTime().then(function(elapsedTime) {
+        socket.emit('returnCurrentVideoElapsedTime', {
+            "elapsedTime" : elapsedTime,
+            "newClientSocketId" : newClientSocketId
+        });
+    });
+});
+
+socket.on('playCurrentVideoForNewClient', function(currentVideoData) {
+    var currentMusicQueueObject = currentVideoData.currentMusicQueueObject;
+    updateNowPlayingHeader(currentMusicQueueObject.video, currentMusicQueueObject.kerberos);
+
+    musicPlayer.loadVideoById(currentMusicQueueObject.id);
+    musicPlayer.seekTo(currentVideoData.elapsedTime);
+    musicPlayer.playVideo();
+});
+
 socket.on('newSongQueueForClient', function(newMusicQueueObject) {
     addSongToBucketList(newMusicQueueObject.bucket, newMusicQueueObject.title, newMusicQueueObject.kerberos);
-    addNewSongQueueAlert(false, "Video successfully added to queue!", "");
+    // addNewSongQueueAlert(false, "Video successfully added to queue!", "");
     if(newMusicQueueObject.playVideo) {
         updateNowPlayingHeader(newMusicQueueObject.title, newMusicQueueObject.kerberos);
         musicPlayer.loadVideoById(newMusicQueueObject.id);

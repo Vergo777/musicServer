@@ -90,7 +90,7 @@ validateVideoLink = function(socket, newSong) {
                 "id" : getVideoId(newSong).id
             });
         } else {
-            socket.emit('videoAddError', AddVideoException(error, "Unable to add video to queue, please check that your youtube link is valid"));
+            socket.emit('videoAddError', "Unable to add video to queue, please check that your youtube link is valid");
         }
     })
 };
@@ -140,12 +140,4 @@ addNewSongToQueue = function(socket, newSong, videoMetadata) {
 
 isSocketMaster = function(socketId) {
     return socketId == masterSocket.socketId;
-};
-
-AddVideoException = function (error, message) {
-    return {
-        "error" : error,
-        "message" : message,
-        "name" : "AddVideoException"
-    }
 };
